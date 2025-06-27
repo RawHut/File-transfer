@@ -1,27 +1,50 @@
-const pinInput = document.getElementById('pinInput');
-const joinBtn = document.getElementById('joinBtn');
-const transferSection = document.getElementById('transferSection');
-const fileInput = document.getElementById('fileInput');
-const sendBtn = document.getElementById('sendBtn');
+// app.js
+const createBtn      = document.getElementById('createBtn');
+const showJoinBtn    = document.getElementById('showJoinBtn');
+const joinSection    = document.getElementById('joinSection');
+const pinInput       = document.getElementById('pinInput');
+const joinBtn        = document.getElementById('joinBtn');
+const transferSection= document.getElementById('transferSection');
+const fileInput      = document.getElementById('fileInput');
+const sendBtn        = document.getElementById('sendBtn');
 const progressContainer = document.getElementById('progressContainer');
-const progressBar = document.getElementById('progressBar');
-const totalSizeEl = document.getElementById('totalSize');
+const progressBar    = document.getElementById('progressBar');
+const totalSizeEl    = document.getElementById('totalSize');
 const receivedSizeEl = document.getElementById('receivedSize');
 const progressPercentEl = document.getElementById('progressPercent');
-const etaEl = document.getElementById('eta');
+const etaEl          = document.getElementById('eta');
 
 let peer, conn;
-let startTime, totalSize, receivedSize = 0;
+let totalSize = 0, receivedSize = 0, startTime = 0;
 
-// Join room on click
+// Show Join PIN field
+showJoinBtn.onclick = () => {
+  joinSection.classList.remove('hidden');
+};
+
+// Create room with random PIN
+createBtn.onclick = () => {
+  const pin = Math.floor(1000 + Math.random() * 9000).toString();
+  initPeer(pin);
+  alert(`Your room PIN is: ${pin}`);
+};
+
+// Join existing room
 joinBtn.onclick = () => {
   const pin = pinInput.value.trim();
-  if (pin.length !== 4) {
-    alert('Please enter a 4-digit PIN');
-    return;
+  if (pin.length !== 4 || isNaN(pin)) {
+    return alert('Enter a valid 4-digit PIN');
   }
-  const peerId = pin + '-' + Math.random().toString(36).substr(2, 5);
-  peer = new Peer(peerId);
+  initPeer(pin);
+};
+
+function initPeer(pin) {
+  // Hide room selection UI
+  document.getElementById('roomOptions').classList.add('hidden');
+  joinSection.classList.add('hidden');
+
+  // Initialize PeerJS
+  peer = new Peer(`${pin}-${Math.random().toString(36).substr(2, 5)}`);
 
   peer.on('open', id => {
     peer.listAllPeers(peers => {
@@ -37,18 +60,21 @@ joinBtn.onclick = () => {
     conn = connection;
     setupConnection();
   });
-
-  joinBtn.disabled = true;
-};
+}
 
 function setupConnection() {
   transferSection.classList.remove('hidden');
+
   conn.on('data', data => {
     if (!totalSize) return;
     receivedSize += data.byteLength;
-    updateStats();
+    progressBar.style.width = `${(receivedSize/totalSize)*100}%`;
+    progressPercentEl.textContent = `${Math.floor((receivedSize/totalSize)*100)}%`;
     receivedSizeEl.textContent = formatBytes(receivedSize);
-    if (receivedSize === totalSize) {
+    updateETA();
+
+    // On complete
+    if (receivedSize >= totalSize) {
       const blob = new Blob(receivedBuffers);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -61,39 +87,47 @@ function setupConnection() {
 
 sendBtn.onclick = () => {
   const file = fileInput.files[0];
-  if (!file) return;
-  const chunkSize = 16 * 1024;
+  if (!file) return alert('Select a file to send');
   totalSize = file.size;
   receivedSize = 0;
-  totalSizeEl.textContent = formatBytes(totalSize);
-  progressContainer.classList.remove('hidden');
+  receivedBuffers = [];
   startTime = Date.now();
 
-  const reader = new FileReader();
+  totalSizeEl.textContent = formatBytes(totalSize);
+  receivedSizeEl.textContent = '0 B';
+  progressBar.style.width = '0%';
+  progressPercentEl.textContent = '0%';
+  progressContainer.classList.remove('hidden');
+
+  const chunkSize = 16 * 1024;
   let offset = 0;
+  const reader = new FileReader();
+
   reader.onload = e => {
     conn.send(e.target.result);
+    receivedBuffers.push(e.target.result);
     offset += chunkSize;
-    progressBar.style.width = ((offset / totalSize) * 100) + '%';
-    progressPercentEl.textContent = Math.floor((offset / totalSize) * 100) + '%';
-    updateStats();
+    progressBar.style.width = `${(offset/totalSize)*100}%`;
+    progressPercentEl.textContent = `${Math.floor((offset/totalSize)*100)}%`;
+    updateETA();
+
     if (offset < totalSize) {
       readSlice(offset);
     }
   };
 
-  const readSlice = o => {
-    const slice = file.slice(offset, o + chunkSize);
+  function readSlice(o) {
+    const slice = file.slice(o, o + chunkSize);
     reader.readAsArrayBuffer(slice);
-  };
+  }
   readSlice(0);
 };
 
-function updateStats() {
+function updateETA() {
   const elapsed = (Date.now() - startTime) / 1000;
   const speed = receivedSize / elapsed;
   const remaining = (totalSize - receivedSize) / speed;
-  etaEl.textContent = `${Math.floor(remaining)}s`;
+  etaEl.textContent = `${Math.max(0, Math.floor(remaining))}s`;
 }
 
 function formatBytes(bytes) {
