@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,16 +8,27 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+  <div class="card">
     <h1>P2P File Transfer</h1>
-    <input type="text" id="pinInput" placeholder="Enter 4-digit PIN" maxlength="4">
-    <button id="joinBtn">Join Room</button>
+
+    <div id="roomOptions">
+      <button id="createBtn">🔑 Create Room</button>
+      <button id="showJoinBtn">➡️ Join Room</button>
+    </div>
+
+    <div id="joinSection" class="hidden">
+      <input type="text" id="pinInput" placeholder="Enter 4-digit PIN" maxlength="4">
+      <button id="joinBtn">🔓 Join</button>
+    </div>
+
     <div id="transferSection" class="hidden">
       <input type="file" id="fileInput">
-      <button id="sendBtn">Send File</button>
+      <button id="sendBtn">📤 Send File</button>
+
       <div id="progressContainer" class="hidden">
         <div id="progressBar"></div>
       </div>
+
       <div id="stats">
         <p>Size: <span id="totalSize">0</span></p>
         <p>Received: <span id="receivedSize">0</span></p>
@@ -25,6 +37,7 @@
       </div>
     </div>
   </div>
+
   <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
   <script src="app.js"></script>
 </body>
