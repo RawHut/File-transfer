@@ -9,6 +9,26 @@ body {
   height: 100vh;
 }
 
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 10;
+}
+
+.modal-content {
+  background: #fff; padding: 20px; border-radius: 8px; text-align: center;
+}
+
+.modal-content input {
+  width: 80%; padding: 8px; margin: 10px 0; font-size: 1rem;
+}
+
+.modal-content button {
+  padding: 8px 16px; font-size: 1rem; background: #4CAF50; color: #fff; border: none; border-radius: 4px;
+}
+
 .card {
   background: #ffffff;
   width: 360px;
@@ -16,90 +36,38 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   text-align: center;
+  position: relative;
 }
 
-.card h1 {
-  margin-bottom: 16px;
-  color: #2E2E2E;
+.banner {
+  background: #4CAF50; color: #fff; padding: 8px; border-radius: 4px; margin-bottom: 16px;
 }
+
+.hidden { display: none; }
 
 button {
-  font-size: 1rem;
-  border: none;
-  border-radius: 6px;
-  padding: 12px 24px;
-  cursor: pointer;
-  transition: background .2s;
+  font-size: 1rem; border: none; border-radius: 6px; padding: 12px 24px; cursor: pointer; transition: background .2s;
 }
 
-#roomOptions button {
-  margin: 8px;
-  background: #4CAF50;
-  color: #fff;
-}
+#roomOptions button { margin: 8px; background: #4CAF50; color: #fff; }
+#roomOptions button:hover { background: #45A049; }
 
-#roomOptions button:hover {
-  background: #45A049;
-}
+#joinSection { margin-top: 16px; }
+#joinSection input { width: 140px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-right: 8px; }
+#joinSection button { background: #2E2E2E; color: #fff; }
+#joinSection button:hover { background: #1f1f1f; }
 
-#joinSection {
-  margin-top: 16px;
-}
+#transferSection { margin-top: 24px; }
+#deviceList { list-style: none; padding: 0; max-height: 100px; overflow-y: auto; margin-bottom: 12px; }
+#deviceList li { margin: 6px 0; }
+#deviceList input { margin-right: 8px; }
 
-#joinSection input {
-  width: 140px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 8px;
-  font-size: 1rem;
-}
+#sendBtn { background: #2E2E2E; color: #fff; margin-right: 8px; }
+#sendBtn:hover { background: #1f1f1f; }
+#cancelBtn { background: #e53935; color: #fff; }
+#cancelBtn:hover { background: #c62828; }
 
-#joinSection button {
-  background: #2E2E2E;
-  color: #fff;
-}
+#progressContainer { width: 100%; background: #ddd; border-radius: 4px; margin: 16px 0; overflow: hidden; }
+#progressBar { width: 0; height: 10px; background: #4CAF50; }
 
-#joinSection button:hover {
-  background: #1f1f1f;
-}
-
-#transferSection {
-  margin-top: 24px;
-}
-
-#transferSection input[type="file"] {
-  margin-bottom: 12px;
-}
-
-#sendBtn {
-  background: #2E2E2E;
-  color: #fff;
-}
-
-#sendBtn:hover {
-  background: #1f1f1f;
-}
-
-.hidden {
-  display: none;
-}
-
-#progressContainer {
-  width: 100%;
-  background: #ddd;
-  border-radius: 4px;
-  margin: 16px 0;
-  overflow: hidden;
-}
-
-#progressBar {
-  width: 0;
-  height: 10px;
-  background: #4CAF50;
-}
-
-#stats p {
-  margin: 6px 0;
-  font-size: 0.95rem;
-}
+#stats p { margin: 6px 0; font-size: 0.95rem; }
