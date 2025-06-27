@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>P2P File Transfer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>P2P File Transfer</h1>
+    <input type="text" id="pinInput" placeholder="Enter 4-digit PIN" maxlength="4">
+    <button id="joinBtn">Join Room</button>
+    <div id="transferSection" class="hidden">
+      <input type="file" id="fileInput">
+      <button id="sendBtn">Send File</button>
+      <div id="progressContainer" class="hidden">
+        <div id="progressBar"></div>
+      </div>
+      <div id="stats">
+        <p>Size: <span id="totalSize">0</span></p>
+        <p>Received: <span id="receivedSize">0</span></p>
+        <p>Progress: <span id="progressPercent">0%</span></p>
+        <p>ETA: <span id="eta">0s</span></p>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
